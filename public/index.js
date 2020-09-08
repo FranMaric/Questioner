@@ -1,42 +1,52 @@
-//CONSTANT variables
+var print = (_a) => console.log(_a);
 
-const categories = [
-    { 'name': 'General Knowledge', 'code': '9' },
-    { 'name': 'Books', 'code': '10' },
-    { 'name': 'Film', 'code': '11' },
-    { 'name': 'Music', 'code': '12' },
-    { 'name': 'Televison', 'code': '14' },
-    { 'name': 'Video games', 'code': '15' },
-    { 'name': 'Board games', 'code': '16' },
-    { 'name': 'Science & Nature', 'code': '17' },
-    { 'name': 'Computers', 'code': '18' },
-    { 'name': 'Mathematics', 'code': '19' },
-    { 'name': 'Mythology', 'code': '20' },
-    { 'name': 'Sports', 'code': '21' },
-    { 'name': 'Geography', 'code': '22' },
-    { 'name': 'History', 'code': '23' },
-    { 'name': 'Politics', 'code': '24' },
-    { 'name': 'Art', 'code': '25' },
-    { 'name': 'Celebrities', 'code': '26' },
-    { 'name': 'Animals', 'code': '27' },
-    { 'name': 'Vehicles', 'code': '28' },
-    { 'name': 'Comics', 'code': '29' },
-    { 'name': 'Gadgets', 'code': '30' },
-    { 'name': 'Cartoon & Animations', 'code': '32' },
-];
+//CONSTANT variables
+const NUMBER_OF_QUESTIONS = 10;
+
+const categories = {
+    'Random': '',
+    'General Knowledge': '9',
+    'Books': '10',
+    'Film': '11',
+    'Music': '12',
+    'Televison': '14',
+    'Video games': '15',
+    'Board games': '16',
+    'Science & Nature': '17',
+    'Computers': '18',
+    'Mathematics': '19',
+    'Mythology': '20',
+    'Sports': '21',
+    'Geography': '22',
+    'History': '23',
+    'Politics': '24',
+    'Art': '25',
+    'Celebrities': '26',
+    'Animals': '27',
+    'Vehicles': '28',
+    'Comics': '29',
+    'Gadgets': '30',
+    'Cartoon & Animations': '32',
+};
 
 const baseUrl = "https://opentdb.com/api.php";
 
-//On window load
+const fetchSessionTokenUrl = "https://opentdb.com/api_token.php?command=request";
 
+//PROGRAM \/
+
+//On window load
 window.onload = function() {
-    categories.forEach((cat) => { //Put all categories into dropdown
-        const tag = `<a class="dropdown-item" onclick="setCategory('${cat["code"]}')" style="cursor: pointer;">${cat["name"]}</a>`;
+    //Put all categories into dropdown
+    Object.keys(categories).forEach((key) => {
+        const tag = `<a class="dropdown-item" onclick="setCategory('${categories[key]}')" style="cursor: pointer;">${key}</a>`;
         document.getElementById("categories").insertAdjacentHTML("beforeend", tag);
     });
 }
 
 var categoryCode = "";
+var difficulty = "";
+
 var questions = [];
 var questionIndex = 0;
 var correctAnswerIndex;
@@ -44,68 +54,93 @@ var correctAnswerIndex;
 var timer = 0;
 var correctAnswers = 0;
 
-var getQuestions = function(category, difficulty) { //API call
-    const url = baseUrl + `?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`;
-
+//API call
+var callAPI = function(url, response) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
     xhr.onload = function() {
         var status = xhr.status;
         if (status === 200) {
-            jsonResponse(null, xhr.response);
+            response(null, xhr.response);
         } else {
-            jsonResponse(status, xhr.response);
+            response(status, xhr.response);
         }
     };
     xhr.send();
 };
 
-function jsonResponse(status, response) {
+function questionResponse(status, response) {
+    if (status != null || response.results.length != NUMBER_OF_QUESTIONS) {
+        document.getElementById("start-form").classList.add("hide");
+        document.getElementById("question-form").classList.add("hide");
+
+        document.getElementById("error").classList.remove("hide");
+        return;
+    }
     timer = 0;
     questionIndex = 0;
     questions = response.results;
 
     document.getElementById("start-form").classList.add("hide");
 
-    nextQuestion(0);
+    showQuestion(0);
 
     document.getElementById("question-form").classList.remove("hide");
 
-    document.getElementById("counter").classList.remove("hide");
+    document.getElementById("outter-semafor").classList.remove("hide");
 
 
 }
 
 function setCategory(selectedCat) {
-    categories.forEach((cat) => {
-        if (cat["code"] === selectedCat) {
-            categoryCode = cat["code"];
-            document.getElementById("dropdownMenuButton").innerText = cat["name"];
+    Object.keys(categories).forEach((key) => {
+        if (categories[key] === selectedCat) {
+            categoryCode = selectedCat;
+            document.getElementById("dropdownMenuButtonCategory").innerText = key;
         }
     });
 }
 
+function setDifficulty(diff) {
+    if (["easy", "medium", "hard"].includes(diff)) {
+        difficulty = diff;
+        document.getElementById("dropdownMenuButtonnDifficulty").innerText = diff.charAt(0).toUpperCase() + diff.slice(1);
+    }
+}
+
 function startGame() {
-    if (!["", null, undefined].includes(categoryCode))
-        getQuestions(categoryCode, "hard");
+    if (!["", " ", null, undefined].includes(categoryCode) && ["easy", "medium", "hard"].includes(difficulty)) {
+        //Get questions through API
+        const url = baseUrl + `?amount=${NUMBER_OF_QUESTIONS}&category=${categoryCode}&difficulty=${difficulty}&type=multiple`;
+        callAPI(url, questionResponse);
+    }
 }
 
 function endGame() {
+    document.getElementById("finish").innerText = `You have completed the questioner.\nYour score: ${correctAnswers}/${questionIndex}`;
+    document.getElementById("question-form").classList.add('hide');
+    document.getElementById("counter").classList.add('hide');
+    document.getElementById("question-mark").classList.add('hide');
 
+    document.getElementById("finish").classList.remove('hide');
 }
 
 function answer(index) {
-    if (index === correctAnswerIndex) {
-        correctAnswers++;
+    if (index === correctAnswerIndex) correctAnswers++;
+
+    if (questionIndex === NUMBER_OF_QUESTIONS - 1) {
+        endGame();
+        return;
     }
+
     questionIndex++;
-    nextQuestion(questionIndex);
+    showQuestion(questionIndex);
 }
 
-function nextQuestion(index) {
-    if (index == 9) {
-        endGame();
+function showQuestion(index) {
+    if (index >= NUMBER_OF_QUESTIONS || index < 0) {
+        print("Index out of range in showQuestion()");
         return;
     }
 
@@ -121,4 +156,5 @@ function nextQuestion(index) {
             document.getElementById(`answer-btn-${i}`).innerText = wrongAnswers.splice(Math.floor(Math.random() * wrongAnswers.length), 1);;
 
     document.getElementById("counter").innerText = `${correctAnswers}/${questionIndex}`;
+    document.getElementById("question-mark").innerText = `${questionIndex}.`;
 }

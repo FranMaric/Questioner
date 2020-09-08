@@ -40,9 +40,34 @@ h1 {
     font-size: 6vh;
 }
 
-h2 {
+#semafor {
+    display: flex;
+    flex-direction: row;
+}
+
+#question-mark {
+    font-weight: 700;
+    margin: 15px;
+}
+
+#question {
     text-align: center;
-    padding: 20px 0px;
+    padding: 40px 0px;
+    margin: 0px 10px;
+}
+
+#finish {
+    margin: 50px 10px;
+    text-align: center;
+    font-size: larger;
+    font-weight: 600;
+}
+
+#error {
+    margin: 50px 10px;
+    text-align: center;
+    font-size: larger;
+    font-weight: 600;
 }
 
 h3,
@@ -57,7 +82,7 @@ h3,
 .btn {
     background-color: #ff6d00 !important;
     border: none !important;
-    margin: 10px;
+    margin: 1.5%;
 }
 
 .hide {

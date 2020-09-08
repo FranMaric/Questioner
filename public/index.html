@@ -25,28 +25,52 @@
 </head>
 
 <body>
-    <header class="header">
+    <div class="header">
         <h1 class="title">Ten Questioner</h1>
-    </header>
-    <div id="counter" class="hide">0/0</div>
-    <div class="start-form" id="start-form">
-        <div class="dropdown">
-
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Category
-                </button>
-
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories">
-
-            </div>
-        </div> <button class="btn btn-primary" onclick="startGame()"><h3>START</h3></button>
     </div>
-    <div class="question-form hide" id="question-form">
-        <h2 id="question"></h2>
+    <div class="hide" id="outter-semafor">
+        <div id="semafor">
+            <div id="question-mark">1.</div>
+            <div id="counter">0/0</div>
+        </div>
+    </div>
+
+    <div class="start-form" id="start-form">
+        <div class="row">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonCategory" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select category</button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories"></div>
+            </div>
+
+            <div style="width: 5px;"></div>
+
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonnDifficulty" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select difficulty</button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories">
+                    <a class="dropdown-item" onclick="setDifficulty('easy')" style="cursor: pointer;">Easy</a>
+                    <a class="dropdown-item" onclick="setDifficulty('medium')" style="cursor:
+                            pointer;">Medium</a>
+                    <a class="dropdown-item" onclick="setDifficulty('hard')" style="cursor: pointer;">Hard</a>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="startGame()"><h3>START</h3></button>
+    </div>
+
+    <div class="hide question-form" id="question-form">
+        <div id="question"></div>
+
         <button class="btn btn-primary" onclick="answer(0)" id="answer-btn-0"></button>
         <button class="btn btn-primary" onclick="answer(1)" id="answer-btn-1"></button>
         <button class="btn btn-primary" onclick="answer(2)" id="answer-btn-2"></button>
         <button class="btn btn-primary" onclick="answer(3)" id="answer-btn-3"></button>
+    </div>
+
+    <div class="hide" id="finish"></div>
+
+    <div class="hide" id="error">
+        An error has occured. Check the internet connection or change category and difficulty maybe we haven't made questions for that choice of yours. :(
     </div>
 
 </body>
