@@ -18,12 +18,17 @@ body {
     align-items: center;
 }
 
-.question-form {
+.start-form {
     display: flex;
     height: 80%;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+}
+
+.question-form {
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
@@ -33,6 +38,11 @@ h1 {
     letter-spacing: 4px;
     font-weight: 900;
     font-size: 6vh;
+}
+
+h2 {
+    text-align: center;
+    padding: 20px 0px;
 }
 
 h3,
@@ -47,4 +57,16 @@ h3,
 .btn {
     background-color: #ff6d00 !important;
     border: none !important;
+    margin: 10px;
+}
+
+.hide {
+    display: none;
+}
+
+#counter {
+    position: absolute;
+    right: 10px;
+    font-size: 2em;
+    font-weight: 700;
 }

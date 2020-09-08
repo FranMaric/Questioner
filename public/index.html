@@ -28,7 +28,8 @@
     <header class="header">
         <h1 class="title">Ten Questioner</h1>
     </header>
-    <div class="question-form">
+    <div id="counter" class="hide">0/0</div>
+    <div class="start-form" id="start-form">
         <div class="dropdown">
 
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -38,7 +39,14 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories">
 
             </div>
-        </div> <button class="btn btn-primary"><h3>Odgovor1</h3></button>
+        </div> <button class="btn btn-primary" onclick="startGame()"><h3>START</h3></button>
+    </div>
+    <div class="question-form hide" id="question-form">
+        <h2 id="question"></h2>
+        <button class="btn btn-primary" onclick="answer(0)" id="answer-btn-0"></button>
+        <button class="btn btn-primary" onclick="answer(1)" id="answer-btn-1"></button>
+        <button class="btn btn-primary" onclick="answer(2)" id="answer-btn-2"></button>
+        <button class="btn btn-primary" onclick="answer(3)" id="answer-btn-3"></button>
     </div>
 
 </body>
