@@ -42,10 +42,13 @@ window.onload = function() {
         const tag = `<a class="dropdown-item" onclick="setCategory('${categories[key]}')" style="cursor: pointer;">${key}</a>`;
         document.getElementById("categories").insertAdjacentHTML("beforeend", tag);
     });
+
+    checkCookie("sessionToken");
 }
 
 var categoryCode = "";
 var difficulty = "";
+var sessionToken = "";
 
 var questions = [];
 var questionIndex = 0;
@@ -55,29 +58,31 @@ var timer = 0;
 var correctAnswers = 0;
 
 //API call
-var callAPI = function(url, response) {
+var callAPI = function(url, responseFunc) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
     xhr.onload = function() {
         var status = xhr.status;
         if (status === 200) {
-            response(null, xhr.response);
+            responseFunc(null, xhr.response);
         } else {
-            response(status, xhr.response);
+            responseFunc(status, xhr.response);
         }
     };
     xhr.send();
 };
 
 function questionResponse(status, response) {
-    if (status != null || response.results.length != NUMBER_OF_QUESTIONS) {
+    print(status, response);
+    if (status != null || response.results.length != NUMBER_OF_QUESTIONS || response.response_code === 1) {
         document.getElementById("start-form").classList.add("hide");
         document.getElementById("question-form").classList.add("hide");
 
         document.getElementById("error").classList.remove("hide");
         return;
     }
+
     timer = 0;
     questionIndex = 0;
     questions = response.results;
@@ -89,8 +94,46 @@ function questionResponse(status, response) {
     document.getElementById("question-form").classList.remove("hide");
 
     document.getElementById("outter-semafor").classList.remove("hide");
+}
 
+function sessionTokenResponse(status, response) {
+    if (status != null || response.response_code === 1) {
+        return;
+    }
 
+    sessionToken = response.token;
+
+    setCookie("sessionToken", sessionToken, 0.25);
+    print(`Session token from api: ${sessionToken}`);
+}
+
+function checkCookie() {
+    var cookieData = getCookie("sessionToken");
+
+    if (cookieData != "") sessionToken = cookieData;
+    else callAPI(fetchSessionTokenUrl, sessionTokenResponse);
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }
 
 function setCategory(selectedCat) {
@@ -112,13 +155,13 @@ function setDifficulty(diff) {
 function startGame() {
     if (!["", " ", null, undefined].includes(categoryCode) && ["easy", "medium", "hard"].includes(difficulty)) {
         //Get questions through API
-        const url = baseUrl + `?amount=${NUMBER_OF_QUESTIONS}&category=${categoryCode}&difficulty=${difficulty}&type=multiple`;
+        const url = baseUrl + `?amount=${NUMBER_OF_QUESTIONS}&category=${categoryCode}&difficulty=${difficulty}&type=multiple&token=${sessionToken}`;
         callAPI(url, questionResponse);
     }
 }
 
 function endGame() {
-    document.getElementById("finish").innerText = `You have completed the questioner.\nYour score: ${correctAnswers}/${questionIndex}`;
+    document.getElementById("finish").innerText = `You have completed the questioner.\nYour score: ${correctAnswers}/${NUMBER_OF_QUESTIONS}`;
     document.getElementById("question-form").classList.add('hide');
     document.getElementById("counter").classList.add('hide');
     document.getElementById("question-mark").classList.add('hide');
