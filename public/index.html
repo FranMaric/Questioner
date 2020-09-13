@@ -32,26 +32,47 @@
         <div id="semafor">
             <div id="question-mark">1.</div>
             <div id="counter">0/0</div>
+            <div id="time-counter">0</div>
         </div>
     </div>
 
     <div class="start-form" id="start-form">
-        <div class="row">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonCategory" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select category</button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories"></div>
-            </div>
-
-            <div style="width: 5px;"></div>
-
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonnDifficulty" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select difficulty</button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories">
-                    <a class="dropdown-item" onclick="setDifficulty('easy')" style="cursor: pointer;">Easy</a>
-                    <a class="dropdown-item" onclick="setDifficulty('medium')" style="cursor:
-                            pointer;">Medium</a>
-                    <a class="dropdown-item" onclick="setDifficulty('hard')" style="cursor: pointer;">Hard</a>
+        <div class="cat-score-row">
+            <div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonCategory" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select category</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories"></div>
                 </div>
+
+                <div style="width: 5px;"></div>
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonnDifficulty" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Select difficulty</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="categories">
+                        <a class="dropdown-item" onclick="setDifficulty('easy')" style="cursor:
+                                pointer;">Easy</a>
+                        <a class="dropdown-item" onclick="setDifficulty('medium')" style="cursor:
+                                pointer;">Medium</a>
+                        <a class="dropdown-item" onclick="setDifficulty('hard')" style="cursor:
+                                pointer;">Hard</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <table class="table scoreboard" id="scoreboard">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreboard-body">
+                        <tr>
+                            <td>Markan</td>
+                            <th scope="row">20012</th>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

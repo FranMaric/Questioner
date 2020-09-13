@@ -54,7 +54,7 @@ var questions = [];
 var questionIndex = 0;
 var correctAnswerIndex;
 
-var timer = 0;
+var timeCounter = 0;
 var correctAnswers = 0;
 
 //API call
@@ -201,3 +201,14 @@ function showQuestion(index) {
     document.getElementById("counter").innerText = `${correctAnswers}/${questionIndex}`;
     document.getElementById("question-mark").innerText = `${questionIndex}.`;
 }
+
+//Counter
+setInterval(function() {
+    timeCounter += 10;
+    if (timeCounter % 100 === 0) {
+        var minutes = Math.floor((timeCounter % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = (timeCounter % (1000 * 60)) / 1000;
+
+        document.getElementById("time-counter").innerHTML = minutes + " min " + seconds + ' sec';
+    }
+}, 10);

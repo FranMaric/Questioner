@@ -31,6 +31,12 @@ body {
     flex-direction: column;
 }
 
+.cat-score-row {
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+}
+
 h1 {
     color: white;
     font-family: 'Oswald', sans-serif;
@@ -48,6 +54,20 @@ h1 {
 #question-mark {
     font-weight: 700;
     margin: 15px;
+}
+
+#time-counter {
+    width: 100%;
+    font-weight: 700;
+    margin: 15px;
+    text-align: center;
+}
+
+#counter {
+    position: absolute;
+    right: 10px;
+    font-size: 2em;
+    font-weight: 700;
 }
 
 #question {
@@ -87,11 +107,4 @@ h3,
 
 .hide {
     display: none;
-}
-
-#counter {
-    position: absolute;
-    right: 10px;
-    font-size: 2em;
-    font-weight: 700;
 }
