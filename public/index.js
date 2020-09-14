@@ -56,7 +56,7 @@ var sessionToken = "";
 var questions = [];
 var questionIndex = 0;
 var correctAnswerIndex;
-var top10;
+var top10 = [];
 var score;
 
 var timeCounter = 0;
@@ -163,8 +163,9 @@ function setDifficulty(diff) {
 
 function getAndShowScoreboard(diff) {
     db.collection('tables').doc(diff).get().then((e) => {
-        top10 = e.data()['top10'];
-        if (top10 != undefined && top10 != null) {
+        if (e.data()['top10'] != undefined && e.data()['top10'] != null) {
+            top10 = e.data()['top10'];
+
             document.getElementById('scoreboard-body').innerHTML = '';
             top10.forEach((scoreRow) => {
                 var tableRow = `
@@ -201,7 +202,7 @@ function endGame() {
         Your score: ${score}
         `;
 
-        if (score > top10[top10.length - 1]['score'] || top10.length < 10) {
+        if (top10.length === 0 || score > top10[top10.length - 1]['score'] || top10.length < 10) {
             document.getElementById("enter-score").classList.remove('hide');
         }
     }
@@ -219,9 +220,31 @@ function endGame() {
 }
 
 function submitScore() {
-    if (score > top10[top10.length - 1]['score'] || top10.length < 10) {
+    if (top10.length === 0 || score > top10[top10.length - 1]['score'] || top10.length < 10) {
         var name = document.getElementById('name').value;
+        var scoreData = {
+            'name': name,
+            'score': score,
+            'category': categoryCode,
+            'datetime': new Date().toLocaleString(),
+        };
 
+        for (var i = top10.length - 1; i > -1; i--) {
+            if (top10[i]['score'] < score || (top10.length - 1 === i && top10.length < 10)) {
+                top10.splice(i + 1, 0, scoreData);
+                break
+            }
+        }
+        if (top10.length === 0) top10.push(scoreData);
+
+        while (top10.length > 10) {
+            top10.pop();
+        }
+        print(top10);
+
+        db.collection('tables').doc(difficulty).set({
+            'top10': top10,
+        }).then(() => location.reload());
     }
 }
 
