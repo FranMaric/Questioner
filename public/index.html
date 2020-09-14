@@ -74,12 +74,7 @@
                             <th scope="col">Score</th>
                         </tr>
                     </thead>
-                    <tbody id="scoreboard-body">
-                        <tr>
-                            <td>Markan</td>
-                            <th scope="row">20012</th>
-                        </tr>
-                    </tbody>
+                    <tbody id="scoreboard-body"></tbody>
                 </table>
             </div>
         </div>
@@ -99,6 +94,14 @@
     <div class="hide" id="finish">
 
     </div>
+
+    <div class="hide" id="enter-score">
+        <div class="hehe">
+            <input class="form-control" type="text" id="name">
+            <button class="btn btn-primary" onclick="submitScore()">Submit</button>
+        </div>
+    </div>
+
     <div class="hide" id="again">
         <button class="hide btn btn-primary" onclick="location.reload();">Once
                 again</button>

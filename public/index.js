@@ -37,6 +37,8 @@ const fetchSessionTokenUrl = "https://opentdb.com/api_token.php?command=request"
 
 //On window load
 window.onload = function() {
+    setDifficulty('easy');
+
     //Put all categories into dropdown
     Object.keys(categories).forEach((key) => {
         const tag = `<a class="dropdown-item" onclick="setCategory('${categories[key]}')" style="cursor: pointer;">${key}</a>`;
@@ -44,6 +46,7 @@ window.onload = function() {
     });
 
     checkCookie("sessionToken");
+
 }
 
 var categoryCode = "";
@@ -53,6 +56,8 @@ var sessionToken = "";
 var questions = [];
 var questionIndex = 0;
 var correctAnswerIndex;
+var top10;
+var score;
 
 var timeCounter = 0;
 var correctAnswers = 0;
@@ -108,7 +113,6 @@ function sessionTokenResponse(status, response) {
     sessionToken = response.token;
 
     setCookie("sessionToken", sessionToken, 0.25);
-    print(`Session token from api: ${sessionToken}`);
 }
 
 function checkCookie() {
@@ -153,21 +157,25 @@ function setDifficulty(diff) {
     if (["easy", "medium", "hard"].includes(diff)) {
         difficulty = diff;
         document.getElementById("dropdownMenuButtonnDifficulty").innerText = diff.charAt(0).toUpperCase() + diff.slice(1);
-        db.collection('tables').doc(diff).get().then((e) => {
-            var top10 = e.data()['top10'];
-            if (top10 != undefined || top10 != null) {
-                document.getElementById('scoreboard-body').innerHTML = '';
-                top10.forEach((scoreRow) => {
-                    var tableRow = `
-                <tr>
-                    <td>${scoreRow['name']}</td>
-                    <th scope="row">${scoreRow['score']}</th>
-                </tr>`;
-                    document.getElementById('scoreboard-body').insertAdjacentHTML('beforeend', tableRow);
-                });
-            }
-        });
+        getAndShowScoreboard(diff);
     }
+}
+
+function getAndShowScoreboard(diff) {
+    db.collection('tables').doc(diff).get().then((e) => {
+        top10 = e.data()['top10'];
+        if (top10 != undefined && top10 != null) {
+            document.getElementById('scoreboard-body').innerHTML = '';
+            top10.forEach((scoreRow) => {
+                var tableRow = `
+            <tr>
+                <td>${scoreRow['name']}</td>
+                <th scope="row">${scoreRow['score']}</th>
+            </tr>`;
+                document.getElementById('scoreboard-body').insertAdjacentHTML('beforeend', tableRow);
+            });
+        }
+    });
 }
 
 function startGame() {
@@ -185,14 +193,19 @@ function endGame() {
         var minutes = Math.floor((timeCounter % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = (timeCounter % (1000 * 60)) / 1000;
 
-        var score = Math.floor(correctAnswers ** 1.5 / (NUMBER_OF_QUESTIONS * timeCounter) * 10 ** 8)
+        score = Math.floor(correctAnswers ** 2 / (NUMBER_OF_QUESTIONS * timeCounter) * 10 ** 8)
 
         document.getElementById("finish").innerText =
             `You have completed the questioner.
         ${correctAnswers}/${NUMBER_OF_QUESTIONS} in ${minutes} min and ${seconds} sec
         Your score: ${score}
         `;
+
+        if (score > top10[top10.length - 1]['score'] || top10.length < 10) {
+            document.getElementById("enter-score").classList.remove('hide');
+        }
     }
+
 
     document.getElementById("question-form").classList.add('hide');
     document.getElementById("counter").classList.add('hide');
@@ -203,6 +216,13 @@ function endGame() {
 
 
     clearInterval(timer);
+}
+
+function submitScore() {
+    if (score > top10[top10.length - 1]['score'] || top10.length < 10) {
+        var name = document.getElementById('name').value;
+
+    }
 }
 
 function answer(index) {
@@ -235,7 +255,7 @@ function showQuestion(index) {
             document.getElementById(`answer-btn-${i}`).innerText = wrongAnswers.splice(Math.floor(Math.random() * wrongAnswers.length), 1);;
 
     document.getElementById("counter").innerText = `${correctAnswers}/${questionIndex}`;
-    document.getElementById("question-mark").innerText = `${questionIndex}.`;
+    document.getElementById("question-mark").innerText = `${questionIndex+1}.`;
 }
 
 //Counter

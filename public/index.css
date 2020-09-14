@@ -83,6 +83,16 @@ h1 {
     font-weight: 600;
 }
 
+.hehe {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#name {
+    width: 10rem;
+}
+
 #again {
     width: 100%;
     text-align: center;
