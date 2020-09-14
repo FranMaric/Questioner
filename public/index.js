@@ -1,19 +1,5 @@
 var print = (_a) => console.log(_a);
 
-var firebaseConfig = {
-    apiKey: "AIzaSyDes5XW_eFPz16UUUQS_-cNOqCij5ZG7UY",
-    authDomain: "fm-quiz.firebaseapp.com",
-    databaseURL: "https://fm-quiz.firebaseio.com",
-    projectId: "fm-quiz",
-    storageBucket: "fm-quiz.appspot.com",
-    messagingSenderId: "61014012434",
-    appId: "1:61014012434:web:7eecb00e7ca5ba2beb9ecb",
-    measurementId: "G-C9PG86QM0N"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
-
 //CONSTANT variables
 const NUMBER_OF_QUESTIONS = 10;
 
@@ -167,6 +153,20 @@ function setDifficulty(diff) {
     if (["easy", "medium", "hard"].includes(diff)) {
         difficulty = diff;
         document.getElementById("dropdownMenuButtonnDifficulty").innerText = diff.charAt(0).toUpperCase() + diff.slice(1);
+        db.collection('tables').doc(diff).get().then((e) => {
+            var top10 = e.data()['top10'];
+            if (top10 != undefined || top10 != null) {
+                document.getElementById('scoreboard-body').innerHTML = '';
+                top10.forEach((scoreRow) => {
+                    var tableRow = `
+                <tr>
+                    <td>${scoreRow['name']}</td>
+                    <th scope="row">${scoreRow['score']}</th>
+                </tr>`;
+                    document.getElementById('scoreboard-body').insertAdjacentHTML('beforeend', tableRow);
+                });
+            }
+        });
     }
 }
 
