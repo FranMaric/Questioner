@@ -83,6 +83,11 @@ h1 {
     font-weight: 600;
 }
 
+#again {
+    width: 100%;
+    text-align: center;
+}
+
 #error {
     margin: 50px 10px;
     text-align: center;

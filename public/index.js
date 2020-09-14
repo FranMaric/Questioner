@@ -1,5 +1,19 @@
 var print = (_a) => console.log(_a);
 
+var firebaseConfig = {
+    apiKey: "AIzaSyDes5XW_eFPz16UUUQS_-cNOqCij5ZG7UY",
+    authDomain: "fm-quiz.firebaseapp.com",
+    databaseURL: "https://fm-quiz.firebaseio.com",
+    projectId: "fm-quiz",
+    storageBucket: "fm-quiz.appspot.com",
+    messagingSenderId: "61014012434",
+    appId: "1:61014012434:web:7eecb00e7ca5ba2beb9ecb",
+    measurementId: "G-C9PG86QM0N"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
 //CONSTANT variables
 const NUMBER_OF_QUESTIONS = 10;
 
@@ -57,6 +71,8 @@ var correctAnswerIndex;
 var timeCounter = 0;
 var correctAnswers = 0;
 
+var timer;
+
 //API call
 var callAPI = function(url, responseFunc) {
     var xhr = new XMLHttpRequest();
@@ -74,7 +90,6 @@ var callAPI = function(url, responseFunc) {
 };
 
 function questionResponse(status, response) {
-    print(status, response);
     if (status != null || response.results.length != NUMBER_OF_QUESTIONS || response.response_code === 1) {
         document.getElementById("start-form").classList.add("hide");
         document.getElementById("question-form").classList.add("hide");
@@ -83,7 +98,6 @@ function questionResponse(status, response) {
         return;
     }
 
-    timer = 0;
     questionIndex = 0;
     questions = response.results;
 
@@ -91,9 +105,13 @@ function questionResponse(status, response) {
 
     showQuestion(0);
 
+    startTimer();
+
     document.getElementById("question-form").classList.remove("hide");
 
     document.getElementById("outter-semafor").classList.remove("hide");
+
+
 }
 
 function sessionTokenResponse(status, response) {
@@ -161,12 +179,30 @@ function startGame() {
 }
 
 function endGame() {
-    document.getElementById("finish").innerText = `You have completed the questioner.\nYour score: ${correctAnswers}/${NUMBER_OF_QUESTIONS}`;
+    if (timeCounter < 5000) {
+        document.getElementById("finish").innerText = "This isn't a valid game, something suspicious is going on";
+    } else {
+        var minutes = Math.floor((timeCounter % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = (timeCounter % (1000 * 60)) / 1000;
+
+        var score = Math.floor(correctAnswers ** 1.5 / (NUMBER_OF_QUESTIONS * timeCounter) * 10 ** 8)
+
+        document.getElementById("finish").innerText =
+            `You have completed the questioner.
+        ${correctAnswers}/${NUMBER_OF_QUESTIONS} in ${minutes} min and ${seconds} sec
+        Your score: ${score}
+        `;
+    }
+
     document.getElementById("question-form").classList.add('hide');
     document.getElementById("counter").classList.add('hide');
     document.getElementById("question-mark").classList.add('hide');
 
     document.getElementById("finish").classList.remove('hide');
+    document.getElementById("again").classList.remove('hide');
+
+
+    clearInterval(timer);
 }
 
 function answer(index) {
@@ -203,12 +239,20 @@ function showQuestion(index) {
 }
 
 //Counter
-setInterval(function() {
-    timeCounter += 10;
-    if (timeCounter % 100 === 0) {
-        var minutes = Math.floor((timeCounter % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = (timeCounter % (1000 * 60)) / 1000;
+function startTimer() {
+    timeCounter = 0;
 
-        document.getElementById("time-counter").innerHTML = minutes + " min " + seconds + ' sec';
-    }
-}, 10);
+    timer = setInterval(function() {
+        timeCounter += 10;
+        if (timeCounter % 100 === 0) {
+            var minutes = Math.floor((timeCounter % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = (timeCounter % (1000 * 60)) / 1000;
+
+            if (Math.floor(seconds) === seconds) {
+                seconds = seconds.toString() + '.0';
+            }
+
+            document.getElementById("time-counter").innerHTML = minutes + " min " + seconds + ' sec';
+        }
+    }, 10);
+}

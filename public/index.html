@@ -5,8 +5,7 @@
     <!-- My styling -->
     <link rel="stylesheet" href="index.css">
 
-    <!-- My javascript -->
-    <script src="index.js"></script>
+
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -16,9 +15,15 @@
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-analytics.js"></script>
+    <!-- My javascript -->
+    <script src="index.js"></script>
 
-
+    <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Cardo:400,700|Oswald" rel="stylesheet">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Questioner</title>
@@ -88,7 +93,14 @@
         <button class="btn btn-primary" onclick="answer(3)" id="answer-btn-3"></button>
     </div>
 
-    <div class="hide" id="finish"></div>
+    <div class="hide" id="finish">
+
+    </div>
+    <div class="hide" id="again">
+        <button class="hide btn btn-primary" onclick="location.reload();">Once
+                again</button>
+    </div>
+
 
     <div class="hide" id="error">
         An error has occured. Check the internet connection or change category and difficulty maybe we haven't made questions for that choice of yours. :(
