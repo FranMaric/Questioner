@@ -180,8 +180,7 @@ function getAndShowScoreboard(diff) {
 }
 
 function startGame() {
-    if (!["", " ", null, undefined].includes(categoryCode) && ["easy", "medium", "hard"].includes(difficulty)) {
-        //Get questions through API
+    if (![null, undefined].includes(categoryCode) && ["easy", "medium", "hard"].includes(difficulty)) {
         const url = baseUrl + `?amount=${NUMBER_OF_QUESTIONS}&category=${categoryCode}&difficulty=${difficulty}&type=multiple&token=${sessionToken}`;
         callAPI(url, questionResponse);
     }
@@ -221,16 +220,18 @@ function endGame() {
 
 function submitScore() {
     if (top10.length === 0 || score > top10[top10.length - 1]['score'] || top10.length < 10) {
-        var name = document.getElementById('name').value;
         var scoreData = {
-            'name': name,
+            'name': document.getElementById('name').value,
             'score': score,
             'category': categoryCode,
             'datetime': new Date().toLocaleString(),
         };
 
-        for (var i = top10.length - 1; i > -1; i--) {
-            if (top10[i]['score'] < score || (top10.length - 1 === i && top10.length < 10)) {
+        for (var i = 0; i < top10.length; i++) {
+            if (score > top10[i]['score']) {
+                top10.splice(i, 0, scoreData);
+                break
+            } else if (top10.length - 1 === i && top10.length < 10) {
                 top10.splice(i + 1, 0, scoreData);
                 break
             }
