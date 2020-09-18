@@ -35,6 +35,12 @@ body {
     width: 80%;
     display: flex;
     justify-content: space-around;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.table {
+    padding: 20px;
 }
 
 h1 {
