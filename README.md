@@ -2,3 +2,4 @@
 
 ### Game is hosted on firebase hosting [https://fm-quiz.web.app/](https://fm-quiz.web.app/)
 
+Try it, explore it and please break it :))
